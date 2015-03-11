@@ -1,5 +1,5 @@
-WorstBandEver
-=============
+ModemRestart
+============
 
 A short python script for restarting the Motorola SB6121 Cable Modem (Hardware Version 5.0 Firmware Name: SB_KOMODO-1.0.6.14-SCM01-NOSH)
 
