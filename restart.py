@@ -7,6 +7,7 @@ from datetime import datetime
 
 def connection_up():
     r = requests.get('google.com')
+
     return int(r.status_code) == 200
 
 def get_page(tab):
@@ -18,11 +19,15 @@ def build_dictionary(html):
     soup = BeautifulSoup(html)
     table = soup.find_all(['td'])
 
-    information = []
     information = [str(item)[4:-5] for item in table]
 
     return dict(itertools.izip_longest(*[iter(information)] * 2, fillvalue=''))
 
+def reset_modem():
+    r = requests.get('http://192.168.1.100/reset.htm')
+
+def get_filename():
+    return 'incident-{}.html'.format(datetime.now().strftime("%Y%m%d-%H%M%S"))
 
 while True:
     time.sleep(60)
@@ -54,15 +59,15 @@ while True:
 
         # Decide whether or not to restart the Modem
         if status['Cable Modem Status'] == 'Operational':
-            r = requests.get('http://192.168.1.100/reset.htm')
+            reset_modem()
 
-            with open('incident' + datetime.now() + '.html', 'a') as f:
+            with open(get_filename(), 'a') as f:
                 f.write(status_html)
                 f.write(address_html)
                 f.write(signal_html)
                 f.write(logs_html)
 
-                if connection_up:
+                if connection_up():
                     f.write('Connection restored after restart')
                 else:
                     f.write('Connection still down after retart')
