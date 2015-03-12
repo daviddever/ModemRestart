@@ -67,9 +67,11 @@ while True:
                 f.write(signal_html)
                 f.write(logs_html)
 
+                time.sleep(120)
+
                 if connection_up():
                     f.write('Connection restored after restart')
                 else:
                     f.write('Connection still down after retart')
 
-            time.sleep(120)
+            time.sleep(1800)
