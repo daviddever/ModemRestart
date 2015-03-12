@@ -2,12 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 import itertools
 import netifaces
+import time
 from datetime import datetime
 
 def connection_up():
     r = requests.get('google.com')
-    if int(r.status_code) == 200:
-        return True
+    return int(r.status_code) == 200
 
 def get_page(tab):
     r = requests.get('http://192.168.100.1/' + tab)
@@ -19,9 +19,7 @@ def build_dictionary(html):
     table = soup.find_all(['td'])
 
     information = []
-
-    for item in table:
-        information.append(str(item)[4:-5])
+    information = [str(item)[4:-5] for item in table]
 
     return dict(itertools.izip_longest(*[iter(information)] * 2, fillvalue=''))
 
@@ -40,34 +38,33 @@ while True:
         nic = netifaces.ifaddresses('eth0')
         nic[netifaces.AF_INET]
 
-            try:
-                status_html = get_page('indexData.htm')
-                status = build_dictionary(status_html)
+        try:
+           status_html = get_page('indexData.htm')
+           status = build_dictionary(status_html)
 
-                address_html = get_page('cmAddressData.htm')
-                address = build_dictionary(address_html)
+           address_html = get_page('cmAddressData.htm')
+           address = build_dictionary(address_html)
 
-                signal_html = get_page('cmSignalData.htm')
-                logs_html = get_page('cmLogsData.htm')
+           signal_html = get_page('cmSignalData.htm')
+           logs_html = get_page('cmLogsData.htm')
 
-            except:
-                # Modem power off or unreachable
-                break
+        except:
+           # Modem power off or unreachable
+           break
 
-            # Decide whether or not to restart the Modem
-            if status['Cable Modem Status'] == 'Operational'
-                r = requests.get('http://192.168.1.100/reset.htm')
+        # Decide whether or not to restart the Modem
+        if status['Cable Modem Status'] == 'Operational':
+            r = requests.get('http://192.168.1.100/reset.htm')
 
-                f = open('incident' + datime.now() + '.html', 'a')
-                    f.write(status_html)
-                    f.write(address_html)
-                    f.write(signal_html)
-                    f.write(logs.html)
+            with open('incident' + datetime.now() + '.html', 'a') as f:
+                f.write(status_html)
+                f.write(address_html)
+                f.write(signal_html)
+                f.write(logs_html)
 
-                    if check_up:
-                        f.write('Connection restored after restart')
-                    else:
-                        f.write('Connection still down after retart')
-                f.close
+                if connection_up:
+                    f.write('Connection restored after restart')
+                else:
+                    f.write('Connection still down after retart')
 
-                time.sleep(120)
+            time.sleep(120)
