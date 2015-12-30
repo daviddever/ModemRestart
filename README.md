@@ -5,7 +5,7 @@ A short python script for restarting the Motorola SB6121 Cable Modem (Hardware V
 
 This may or may not work for other models depending on their embedded webserver.
 
-The script checks connectivty by sending GET requests to Google. If the internet is down but the script will build pull all the status and log information from the modem and write them into a single file named incident<datetime>.hmtl and restart the modem.
+The script checks connectivty by sending GET requests to Google. If the internet is down the script will pull all the status and log information from the modem and write them into a single file named incident<datetime>.hmtl and restart the modem.
  
 
 Installation
